@@ -1,0 +1,19 @@
+{
+    "name": "google-tts-backend",
+    "version": "1.0.0",
+    "description": "Simple backend for Google TTS",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "dev": "node index.js"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "@google-cloud/text-to-speech": "^5.0.1",
+        "cors": "^2.8.5",
+        "dotenv": "^16.3.1",
+        "express": "^4.18.2"
+    }
+}
