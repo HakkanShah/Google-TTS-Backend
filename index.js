@@ -70,12 +70,39 @@ app.post('/api/speak', async (req, res) => {
             }
         }
 
+        // Fix for "INVALID_ARGUMENT: Requested language code doesn't match voice"
+        // If a voiceName is specific (e.g., "en-IN-Neural2-C"), we MUST use its language code ("en-IN")
+        if (voiceName) {
+            const voiceParts = voiceName.split('-');
+            if (voiceParts.length >= 2) {
+                // Construct "en-IN" from "en-IN-Neural2-C"
+                // Assuming standard Google voice naming format: [lang]-[region]-[type]-[variant]
+                const extractedLangCode = `${voiceParts[0]}-${voiceParts[1]}`;
+
+                // If the user sent a specific voice, we trust that voice's locale over the generic languageCode
+                if (languageCode !== extractedLangCode) {
+                    console.log(`Adjusting languageCode from '${languageCode}' to '${extractedLangCode}' to match voice '${voiceName}'`);
+                    languageCode = extractedLangCode;
+                }
+            }
+        }
+
         if (!ttsClient) {
             return res.status(500).send('TTS Client not initialized. Check server logs.');
         }
 
+        // Create "Human-like" SSML
+        // 1. <speak> wrapper
+        // 2. <prosody> for speed (0.95) and pitch (-2.0st) for calmness
+        const ssmlText = `
+        <speak>
+            <prosody rate="0.95" pitch="-2.0st">
+                ${text}
+            </prosody>
+        </speak>`;
+
         const request = {
-            input: { text: text },
+            input: { ssml: ssmlText }, // Switch from 'text' to 'ssml'
             // Select the language and SSML voice gender (optional)
             // We prioritize 'name' if provided to select specific voices (like WaveNet)
             voice: {
@@ -84,7 +111,11 @@ app.post('/api/speak', async (req, res) => {
                 name: voiceName
             },
             // select the type of audio encoding
-            audioConfig: { audioEncoding: 'MP3' },
+            audioConfig: {
+                audioEncoding: 'MP3',
+                // Optional: Make it slightly softer
+                volumeGainDb: 0.0
+            },
         };
 
         const [response] = await ttsClient.synthesizeSpeech(request);

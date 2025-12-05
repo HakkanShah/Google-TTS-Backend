@@ -4,11 +4,10 @@ A lightweight Node.js/Express backend that interfaces with the **Google Cloud Te
 
 ## 🚀 Features
 
-*   **WaveNet Voices**: Uses Google's premium AI voices (better than standard robot voices).
-*   **Smart Voice Selection**: Automatically selects the best WaveNet voice based on `gender` and `languageCode`.
-    *   **US English**: Male (`en-US-Wavenet-D`), Female (`en-US-Wavenet-F`)
-    *   **Indian English**: Male (`en-IN-Wavenet-C`), Female (`en-IN-Wavenet-D`)
-*   **Secure**: Credentials are managed via Environment Variables (no keys in code).
+*   **Premium Voices**: Native support for **WaveNet** and **Neural2** (Google's most human-like voices).
+*   **Human-Like Prosody**: Automatically applies **SSML tuning** (slower rate, deeper pitch) for a calm, professional interviewer tone.
+*   **Smart Language Detection**: Intelligent logic that automatically fixes locale mismatches (e.g., auto-selects `en-IN` if you pick an Indian voice).
+*   **Secure**: Credentials are managed via Environment Variables.
 *   **Production Ready**: Optimized for Vercel Serverless Functions.
 
 ---
