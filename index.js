@@ -45,22 +45,27 @@ app.post('/api/speak', async (req, res) => {
             return res.status(400).send('Missing "text" in request body.');
         }
 
-        // Auto-select WaveNet voice if not specified
+        // Safety Switch: Default to true unless explicitly set to 'false'
+        const ENABLE_WAVENET = process.env.ENABLE_WAVENET !== 'false';
+
+        // Auto-select voice if not specified
         if (!voiceName) {
-            if (languageCode === 'en-IN') {
-                // Indian English WaveNet Voices
-                // D is Female, C is Male
-                if (gender === 'FEMALE') {
-                    voiceName = 'en-IN-Wavenet-D';
+            const isIndian = languageCode === 'en-IN';
+            const isFemale = gender === 'FEMALE';
+
+            if (ENABLE_WAVENET) {
+                // WaveNet Selection (Premium)
+                if (isIndian) {
+                    voiceName = isFemale ? 'en-IN-Wavenet-D' : 'en-IN-Wavenet-C';
                 } else {
-                    voiceName = 'en-IN-Wavenet-C';
+                    voiceName = isFemale ? 'en-US-Wavenet-F' : 'en-US-Wavenet-D';
                 }
             } else {
-                // Default to US English WaveNet
-                if (gender === 'FEMALE') {
-                    voiceName = 'en-US-Wavenet-F';
+                // Standard Selection (Free-er Tier)
+                if (isIndian) {
+                    voiceName = isFemale ? 'en-IN-Standard-D' : 'en-IN-Standard-C';
                 } else {
-                    voiceName = 'en-US-Wavenet-D';
+                    voiceName = isFemale ? 'en-US-Standard-E' : 'en-US-Standard-D';
                 }
             }
         }

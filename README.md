@@ -123,3 +123,14 @@ fetch('https://your-vercel-app.vercel.app/api/speak', {
 *   **WaveNet Voices**: Free up to **1 million characters** per month.
 *   **Standard Voices**: Free up to **4 million characters** per month.
 *   *Note: This backend defaults to WaveNet for quality. Monitor your usage in the Google Cloud Console.*
+
+### 🛡️ Quota Safety Switch
+
+If you are nearing your free quota limit, you can instantly switch to Standard Voices (saving 4x usage) without redeploying code.
+
+1.  Go to Vercel **Settings** > **Environment Variables**.
+2.  Add/Edit `ENABLE_WAVENET`.
+3.  Set value to `false`.
+4.  Redeploy (or just wait for next build).
+
+The backend will automatically start using `Standard` voices instead of `WaveNet`.
